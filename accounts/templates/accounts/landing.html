@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Choose Workspace</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+    <style>
+        .landing-container {
+            max-width: 720px;
+            width: 100%;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .workspace-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .workspace-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            background: var(--input-bg);
+            border: 1px solid var(--surface-border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .logout-link {
+            color: var(--error);
+            text-decoration: none;
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="landing-container">
+        <div class="user-meta">
+            <div>
+                <span style="color: var(--text-muted); font-size: 0.8125rem;">Logged in as:</span>
+                <div class="user-email">{{ request.user.email }} (Role: {{ request.user.role|default:"User" }})</div>
+            </div>
+            <a href="{% url 'accounts:logout-view' %}" class="logout-link">Sign Out</a>
+        </div>
+
+        <div class="brand-header" style="text-align: left;">
+            <h1>Nexus Workspace Gateway</h1>
+            <p>Select an application engine to explore</p>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Commerce Card -->
+            <a href="/api/v1.1/commerce/" target="_blank" class="workspace-card">
+                <div>
+                    <div class="card-badge">REST API / JWT</div>
+                    <div class="card-title">Commerce Engine</div>
+                    <div class="card-desc">
+                        Headless e-commerce platform. Test product listings, orders, and role-based permissions via interactive Swagger UI.
+                    </div>
+                </div>
+                <div class="btn-submit" style="text-align: center;">Open Commerce Home →</div>
+
+            </a>
+
+            <!-- Social Card -->
+            <a href="/social/" class="workspace-card">
+                <div>
+                    <div class="card-badge">Server-Rendered</div>
+                    <div class="card-title">Social Connect</div>
+                    <div class="card-desc">
+                        Interactive social network app. Create posts, manage friend graphs, and engage with feed content in real time.
+                    </div>
+                </div>
+                <div class="btn-submit" style="text-align: center;">Launch Feed →</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

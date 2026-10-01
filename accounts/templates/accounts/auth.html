@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Authentication</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+</head>
+<body>
+    <div class="auth-card">
+        <div class="brand-header">
+            <h1>Nexus Engine</h1>
+            <p id="sub-heading">Sign in to access your portfolio workspace</p>
+        </div>
+
+        <div class="tab-group">
+            <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+            <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form" method="POST" action="{% url 'accounts:login-view' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" name="username" required placeholder="name@mail.com">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="form-signup" class="auth-form hidden" method="POST" action="{% url 'accounts:signup-view' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="signup-username">Username</label>
+                <input type="text" id="signup-username" name="username" required placeholder="johndoe">
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email Address</label>
+                <input type="email" id="signup-email" name="email" required placeholder="name@company.com">
+            </div>
+            <div class="form-group">
+                <label for="signup-role">Account Type</label>
+                <select id="signup-role" name="role">
+                    <option value="customer">Customer</option>
+                    <option value="vendor">Vendor</option>
+                    <option value="social">Social</option>
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+
+        <div class="form-footer">
+            <p>Looking for API documentation? Visit <a href="/docs/">/docs/</a></p>
+        </div>
+    </div>
+
+    <script src="{% static 'accounts/js/auth.js' %}"></script>
+</body>
+</html>
+
