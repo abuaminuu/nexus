@@ -1,0 +1,49 @@
+{% extends "social/layout.html" %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 720px;">
+
+    <!-- Following Users List -->
+    <h5 class="fw-bold mb-3 text-body-secondary">Following</h5>
+    <div class="mb-4">
+        {% for user in followings %}
+            <div class="card border shadow-sm mb-2 bg-body-tertiary text-body border-secondary-subtle p-3 d-flex flex-row align-items-center justify-content-between">
+                <span class="fw-semibold text-primary-emphasis">@{{ user.username }}</span>
+                <a href="{% url 'profile' username=user.username %}" class="btn btn-outline-primary btn-sm fw-semibold">
+                    View Profile
+                </a>
+            </div>
+        {% empty %}
+            <div class="text-center py-4 text-secondary border rounded bg-body-tertiary border-secondary-subtle">
+                <p class="mb-0">You aren't following anyone yet. Explore user profiles to see their posts here!</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 1. Suggested Users Section -->
+    <h5 class="fw-bold mb-3 text-body-secondary">Suggested Accounts to Follow</h5>
+    <div class="mb-4">
+        {% for user_obj in suggested_users %}
+            <div class="card border shadow-sm mb-2 bg-body-tertiary text-body border-secondary-subtle p-3 d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <span class="fw-semibold text-primary-emphasis d-block">@{{ user_obj.username }}</span>
+                    {% if user_obj.email %}
+                        <small class="text-secondary">{{ user_obj.email }}</small>
+                    {% endif %}
+                </div>
+                <a href="{% url 'profile' username=user_obj.username %}" class="btn btn-primary btn-sm fw-semibold px-3">
+                    View Profile
+                </a>
+            </div>
+        {% empty %}
+            <div class="text-center py-3 text-secondary border rounded bg-body-tertiary border-secondary-subtle">
+                <small class="mb-0">No new users to discover right now.</small>
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr class="my-4 border-secondary-subtle">
+
+</div>
+
+{% endblock %}

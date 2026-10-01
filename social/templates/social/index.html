@@ -1,0 +1,124 @@
+{% extends "social/layout.html" %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 680px;">
+
+    <!-- 1. Post Composer -->
+    {% if user.is_authenticated %}
+        <div class="card border shadow-sm mb-4 bg-body-tertiary text-body border-secondary-subtle">
+            <div class="card-body p-3">
+                <form id="post-form" action="{% url 'post' %}" method="post" >
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="post-content" id="post-content" rows="3" class="form-control bg-body text-body border-secondary-subtle shadow-none" placeholder="What's on your mind !" > </textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="post-submit-btn" type="submit" class="btn btn-primary btn-sm px-4 fw-bold">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info border-info-subtle text-center mb-4">
+            <span>You are viewing the public feed. <a href="{% url 'accounts:login-view' %}" class="alert-link">Sign in</a> to post or like content.</span>
+        </div>
+    {% endif %}
+
+    <!-- 2. Feed Stream -->
+    <div class="feed-stream">
+        {% for post in page_object %}
+            <div class="card border shadow-sm mb-3 bg-body-tertiary text-body border-secondary-subtle post-container" data-post-id="{{ post.id }}">
+                <div class="card-body p-3">
+                    
+                    <!-- Post Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="/social/profile/{{ post.user.username }}">
+                                <strong class="text-primary-emphasis">@{{ post.user.username }}</strong>
+                            </a>
+                            <small class="text-secondary">• {{ post.timestamp|date:"M d, Y H:i" }}</small>
+                        </div>
+
+                        {% if user.is_authenticated and user == post.user %}
+                            <button class="btn btn-outline-secondary btn-sm px-2 py-0 fw-semibold edit-post-button" data-post-id="{{ post.id }}">
+                                Edit
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Post Content -->
+                    <p class="card-text mb-3 post-text" id="post-content-{{ post.id }}" data-post-content="{{ post.content }}">
+                        {{ post.content }}
+                    </p>
+
+                    <!-- Post Footer (High-Contrast Buttons) -->
+                    <div class="d-flex align-items-center gap-3 pt-2 border-top border-secondary-subtle">
+                        {% if user.is_authenticated %}
+                            {% if user != post.user %}
+                                {% if user in post.like_by.all %} 
+                                    <button class="btn btn-outline-danger btn-sm px-3 fw-semibold like-button" data-post-id="{{ post.id }}">
+                                        Unlike
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-primary btn-sm px-3 fw-semibold like-button" data-post-id="{{ post.id }}">
+                                        Like
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        <span class="text-body-secondary small fw-semibold">
+                            <span class="likes-count" id="likes-count-{{ post.id }}">{{ post.like_count }}</span> Likes
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <div class="text-center py-5 text-secondary">
+                <p class="mb-0">No posts found in the stream.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 3. Pagination Controls -->
+    {% if page_object.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination pagination-sm justify-content-center mb-0">
+                {% if page_object.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-body-tertiary text-muted border-secondary-subtle">&laquo; First</span>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link bg-body-tertiary text-body border-secondary-subtle">
+                        Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_object.has_next %}
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-body-tertiary text-muted border-secondary-subtle">Last &raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
+</div>
+{% endblock %}

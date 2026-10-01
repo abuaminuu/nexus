@@ -1,0 +1,194 @@
+{% extends "social/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 720px;">
+
+    <!-- 1. Profile Summary Card -->
+    <div class="card border shadow-sm mb-4 bg-body-tertiary text-body border-secondary-subtle">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-3">
+                
+                <!-- Avatar & Image Upload Section -->
+                <div class="col-auto text-center">
+                    <div class="position-relative d-inline-block">
+                        <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'social/images/avatar.jpeg' %}{% endif %}" 
+                             alt="{{ profile.username }}'s Avatar" 
+                             class="rounded-circle border border-2 border-primary object-fit-cover profile-picture-element"
+                             width="120" 
+                             height="120">
+                    </div>
+                    {% if user.is_authenticated and user == profile %}
+                        <div class="mt-2 photo-upload-wrapper" style="display: none;" id="profile-picture-upload-div" style="font-size: 0.75rem; cursor: pointer;">
+                            <label for="profile-picture-element" class="btn btn-outline-secondary btn-sm" style="font-size: 0.75rem;">
+                                Change Photo
+                            </label>
+                            <input type="file" name="profile-picture-element" id="profile-picture-element" accept="images/*" style="display: none;">
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- User Details & Bio -->
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                        <div>
+                            <h3 class="mb-0 fw-bold text-primary-emphasis">@{{ profile.username }}</h3>
+                            <small class="text-secondary">{{ profile.email }}</small>
+                        </div>
+
+                        <!-- Follow / Edit Profile Actions -->
+                        <div class="profile-actions">
+                            {% if user.is_authenticated %}
+                                {% if user != profile %}
+                                    {% if is_following %}
+                                        <form action="{% url 'unfollow' username=profile.username %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-danger btn-sm px-3 fw-semibold" type="submit" name="follow-button">
+                                                Unfollow
+                                            </button> 
+                                        </form>
+                                    {% else %}
+                                        <form action="{% url 'follow' username=profile.username %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-sm px-3 fw-semibold" type="submit" name="follow-button">
+                                                Follow
+                                            </button> 
+                                        </form>
+                                    {% endif %}
+                                {% else %}
+                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 fw-semibold edit-profile-button">
+                                        Edit Profile
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <p class="profile-bio-element mb-3 text-body-secondary small">
+                        {% if bio %}{{ bio }}{% else %}<em class="text-muted">No bio provided.</em>{% endif %}
+                    </p>
+
+                    <!-- Profile Statistics Bar -->
+                    <div class="d-flex gap-4 pt-2 border-top border-secondary-subtle text-center">
+                        <div>
+                            <strong class="d-block text-body fs-6">{{ posts.count }}</strong>
+                            <small class="text-secondary uppercase fs-7">Posts</small>
+                        </div>
+                        <div>
+                            <strong class="d-block text-body fs-6">{{ followers }}</strong>
+                            <small class="text-secondary uppercase fs-7">Followers</small>
+                        </div>
+                        <div>
+                            <strong class="d-block text-body fs-6">{{ following }}</strong>
+                            <small class="text-secondary uppercase fs-7">Following</small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden element for user identification in JavaScript -->
+    <input type="hidden" class="user-id" data-user-id="{{ user.username }}">
+
+    <!-- 2. Profile Posts Header -->
+    <h5 class="fw-bold mb-3 text-body-secondary">{{ profile.username }}'s Posts</h5>
+
+    <!-- 3. Posts Stream -->
+    <div class="feed-stream">
+        {% for post in page_object %}
+            <div class="card border shadow-sm mb-3 bg-body-tertiary text-body border-secondary-subtle post-container" data-post-id="{{ post.id }}">
+                <div class="card-body p-3">
+                    
+                    <!-- Post Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <strong class="text-primary-emphasis">@{{ post.user.username }}</strong>
+                            <small class="text-secondary">• {{ post.timestamp|date:"M d, Y H:i" }}</small>
+                        </div>
+
+                        {% if user.is_authenticated and user == post.user %}
+                            <button class="btn btn-link btn-sm text-secondary p-0 text-decoration-none edit-post-button" data-post-id="{{ post.id }}">
+                                Edit
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Post Content -->
+                    <p class="card-text mb-3 post-text" id="post-content-{{ post.id }}" data-post-content="{{ post.content }}">
+                        {{ post.content }}
+                    </p>
+
+                    <!-- Post Footer -->
+                    <div class="d-flex align-items-center gap-3 pt-2 border-top border-secondary-subtle">
+                        {% if user.is_authenticated %}
+                            {% if user != post.user %}
+                                {% if user in post.like_by.all %} 
+                                    <button class="btn btn-outline-danger btn-sm px-3 fw-semibold like-button" data-post-id="{{ post.id }}">
+                                        Unlike
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-primary btn-sm px-3 fw-semibold like-button" data-post-id="{{ post.id }}">
+                                        Like
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        <span class="text-body-secondary small fw-semibold">
+                            <span class="likes-count" id="likes-count-{{ post.id }}">{{ post.like_count }}</span> Likes
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <div class="text-center py-5 text-secondary border rounded bg-body-tertiary border-secondary-subtle">
+                <p class="mb-0">No posts shared yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 4. Pagination Controls -->
+    {% if page_object.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination pagination-sm justify-content-center mb-0">
+                {% if page_object.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-body-tertiary text-muted border-secondary-subtle">&laquo; First</span>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link bg-body-tertiary text-body border-secondary-subtle">
+                        Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_object.has_next %}
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-body-tertiary text-body border-secondary-subtle" href="?page={{ page_object.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-body-tertiary text-muted border-secondary-subtle">Last &raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
+</div>
+{% endblock %}
