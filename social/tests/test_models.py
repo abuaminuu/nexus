@@ -1,7 +1,6 @@
 # tests/test_models.py
 from django.contrib.auth import get_user_model
 import pytest
-from commerce.models import Product, Order, OrderItem
 from social.models import Profile, Post, Follow
 
 
@@ -22,7 +21,7 @@ class TestProfileModel:
     """Unit tests for Product model"""
     
     def test_product_creation(self, user):
-        """Test basic product creation"""
+        """Test basic profile creation"""
         profile = Profile.objects.create(
             user=user,
             bio="a graphics designer"
@@ -33,11 +32,11 @@ class TestProfileModel:
     
 
 class TestPostModel:
-    """Unit tests for Order model"""
+    """Unit tests for Post model"""
     
-    def test_order_total_calculation(self, user):
+    def test_post_creation(self, user):
 
-        """Test order total amount calculation"""
+        """Test post creation"""
         post = Post.objects.create(
                     user=user,
                     content="i have a Phone"
@@ -48,9 +47,9 @@ class TestPostModel:
 
 class TestFollowModel:
 
-    """Unit tests for OrderItem model"""
-    def test_order_item_total_price(self, user):
-        """Test total price calculation for order item"""
+    """Unit tests for Follow model"""
+    def test_follow_users(self, user):
+        """Test if User A follow User B"""
 
         friends = Follow.objects.create(
             follower=user,
@@ -58,5 +57,3 @@ class TestFollowModel:
         )
 
         assert friends.follower == friends.following
-        
-
