@@ -167,9 +167,11 @@ python manage.py runserver
 
 Visit the application interfaces:
 
-* **Interactive API Documentation (Swagger):** `[http://127.0.0.1:8000/docs/](http://127.0.0.1:8000/docs/)`
-* **Browsable API:** `[http://127.0.0.1:8000/api/v1/commerce/](http://127.0.0.1:8000/api/v1/commerce/)`
-* **Social Application:** `[http://127.0.0.1:8000/social/](http://127.0.0.1:8000/social/)`
-* **Admin Portal:** `[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)`
+* **Interactive API Documentation (Swagger):** `[http://127.0.0.1:8000/api/v1.1/commece/docs/](http://127.0.0.1:8000/api/v1.1/commece/docs/)`
+* **Commerce Browsable API Local:** `[http://127.0.0.1:8000/api/v1/commerce/](http://127.0.0.1:8000/api/v1.1/commerce/)`
+* **Social Application local:** `[http://127.0.0.1:8000/social/](http://127.0.0.1:8000/social/)`
+* **Social Application Live:** `[https://abuaminuu.pythonanywhere.com/social/](http://127.0.0.1:8000/social/)`
+
+<!-- * **Admin Portal:** `[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)` -->
 
 ---
