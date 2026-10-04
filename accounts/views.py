@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from accounts.serializers import UserRegistrationSerializer
 from django.contrib.auth.decorators import login_required
@@ -31,35 +31,38 @@ def login_view(request):
     if request.method == "GET" and request.user.is_authenticated:
         return redirect("accounts:landing-page")
         
-    if request.method == "POST":
+    if request.method == "POST" and request.user.is_authenticated == False:
         email = request.POST.get("username")
         password = request.POST.get("password")
         
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            # Redirect to the choice gateway instead of hardcoded social feed
+            # Redirect to the choice landing page instead of hardcoded url
             return redirect("accounts:landing-page")
-            
+
+        # esle invalid credentials 
         return render(request, "accounts/auth.html", {"error": "Invalid email or password."})
 
+    # else invalid method
     return render(request, "accounts/auth.html", {"error": "Invalid method."})
     
 
 
 def signup_view(request):
     """Processes signup form submissions from auth.html."""
-    if request.method == "POST":
+    if request.method == "POST" and request.user.is_authenticated == False:
         serializer = UserRegistrationSerializer(data=request.POST)
         if serializer.is_valid():
             user = serializer.save()
-            login(request, user)  # Auto-login after registration
+            # Auto-login after registration
+            login(request, user)  
             return redirect("accounts:landing-page")
-        
+        # esle invalid serializer
         return render(request, "accounts/auth.html", {"errors": serializer.errors})
 
     # else not POST !
-    return redirect("accounts:landing-page")
+    return redirect("accounts:login-view")
 
 def logout_view(request):
     """Logs the user out and redirects to auth page."""

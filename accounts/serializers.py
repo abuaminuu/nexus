@@ -23,7 +23,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise ValidationError("you can not register directly as admin !!!")
         return value
     
-    
     def create(self, validated_data):
         # extract text password from data recieved
         password = validated_data.pop("password")

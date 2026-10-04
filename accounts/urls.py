@@ -14,6 +14,6 @@ urlpatterns = [
     
     # 2. REST API ROUTES (JWT-based for Headless Commerce & Postman)
     path("register/", UserRegistrationView.as_view(), name="register"),
-    path("api-login/", TokenObtainPairView.as_view(), name="api-login"),
+    path("api-token/", TokenObtainPairView.as_view(), name="api-token"),
     path("api-refresh/", TokenRefreshView.as_view(), name="token-refresh")
 ]
