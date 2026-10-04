@@ -1,5 +1,5 @@
 :root {
-    --bg: #090d16;
+    --bg: #202d4f;
     --surface: #111827;
     --surface-border: #1f293d;
     --input-bg: #0b0f19;
@@ -15,7 +15,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background-color: var(--bg);
+    background-color: #bfc8dd;
     color: var(--text-primary);
     font-family: var(--font);
     display: flex;
@@ -32,12 +32,12 @@ body {
     width: 100%;
     max-width: 420px;
     padding: 2.5rem 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 25px -5px rgba(27, 22, 22, 0.5);
 }
 
 .brand-header { text-align: center; margin-bottom: 2rem; }
 .brand-header h1 { font-size: 1.5rem; font-weight: 700; }
-.brand-header p { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem; }
+.brand-header p { font-size: 0.875rem; color: #e3e5eb; margin-top: 0.5rem; }
 
 .tab-group {
     display: grid;

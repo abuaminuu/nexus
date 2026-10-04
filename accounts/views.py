@@ -13,7 +13,6 @@ class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 # 2. HTML TEMPLATE VIEWS (For Browser UI)
-
 @login_required
 def landing_page(request):
     """

@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Making migrations for $1 app..."
+if ["$1" == ""]; then
+    echo "provide app name"
+    exit 1
+else
+    python3 manage.py makemigrations "$1"
+fi

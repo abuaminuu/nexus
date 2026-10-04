@@ -7,6 +7,7 @@ app_name = "accounts"
 
 urlpatterns = [
     # 1. HTML BROWSER ROUTES (Session-based for  UI & Social)
+    path("", views.landing_page, name="index"),
     path("login/", views.login_view, name="login-view"),
     path("signup/", views.signup_view, name="signup-view"),
     path("logout/", views.logout_view, name="logout-view"),

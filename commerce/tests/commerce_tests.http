@@ -1,0 +1,68 @@
+### Variables
+@baseUrl = http://127.0.0.1:8000/api/v1.1/commerce
+@username = testuser
+@password = password123
+
+### 1. Authenticate & Obtain Token
+# @name login
+POST http://127.0.0.1:8000/api/v1.1/token/
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+### Store access token from response
+@authToken = {{login.response.body.access}}
+
+### 2. Fetch Product List
+GET {{baseUrl}}/products/
+Authorization: Bearer {{authToken}}
+
+### 3. Create Order with Item (Product ID: 1)
+# @name createOrder
+POST {{baseUrl}}/orders/create_order_with_item/1/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 2
+}
+
+### Store created order ID from response
+@orderId = {{createOrder.response.body.id}}
+
+### 4. Add Another Item to Existing Order (Product ID: 2)
+POST {{baseUrl}}/orders/{{orderId}}/add_item/2/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 1
+}
+
+### 5. Initiate Order Payment
+POST {{baseUrl}}/orders/{{orderId}}/pay/
+Authorization: Bearer {{authToken}}
+
+### 6. Simulate Payment Callback (Redirect URL)
+GET {{baseUrl}}/payments/callback/{{orderId}}?status=successful&tx_ref=TX_MOCK_12345
+
+### 7. Simulate Payment Webhook (Gateway Postback)
+POST {{baseUrl}}/payments/webhook/
+Content-Type: application/json
+verif-hash: mock_secret_hash
+
+{
+    "event": "charge.completed",
+    "data": {
+        "status": "successful",
+        "tx_ref": "order_{{orderId}}",
+        "amount": 5000
+    }
+}
+
+### 8. Verify Order Details After Payment
+GET {{baseUrl}}/orders/{{orderId}}/
+Authorization: Bearer {{authToken}}

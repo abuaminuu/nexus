@@ -1,6 +1,4 @@
 
-Here is a clean, production-ready `README.md` tailored specifically for your multi-app **Nexus** showcase project. It highlights your architectural decisions, data modeling, API integration, and performance benchmarking to impress prospective clients and engineering leads.
-
 ---
 
 # Nexus — Enterprise Multi-App Platform Engine
@@ -24,9 +22,12 @@ nexus/
 ├── accounts/               # Single Source of Truth for Auth, Roles & User Models
 ├── commerce/               # Headless E-Commerce REST API Engine
 ├── social/                 # Server-Rendered Social Network App
-└── templates/              # Unified UI Templates & Custom Auth Interface
+├── tests/                 # Cross functional tests (integration & E2E Tests)
+
+- Overall Test Coverage 75%
 
 ```
+
 
 ### Key Technical Highlights
 
