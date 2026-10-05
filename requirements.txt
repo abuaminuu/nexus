@@ -19,4 +19,4 @@ graphene==3.4.3
 graphene-django==3.2.3
 psycopg==3.3.2
 psycopg-binary==3.3.2
-Requests==2.34.2
+Requests==2.34
