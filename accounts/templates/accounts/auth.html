@@ -27,10 +27,13 @@
                 <input type="email" id="login-email" name="username" required placeholder="name@mail.com">
             </div>
             <div class="form-group">
-                <label for="login-password">Password</label>
+                <label for="login-password">Password (8+ Characters)</label>
                 <input type="password" id="login-password" name="password" required placeholder="••••••••">
             </div>
             <button type="submit" class="btn-submit">Sign In</button>
+            {% if error %}
+                <div class="login-error-message" style="color: rgb(203, 108, 108);">{{ error }}</div>
+            {% endif %}
         </form>
 
         <!-- Signup Form -->
@@ -38,7 +41,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="signup-username">Username</label>
-                <input type="text" id="signup-username" name="username" required placeholder="johndoe">
+                <input type="text" id="signup-username" name="username" required placeholder="username">
             </div>
             <div class="form-group">
                 <label for="signup-email">Email Address</label>
@@ -54,10 +57,23 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="signup-password">Password</label>
+                <label for="signup-password">Password Password (8+ Characters)</label>
                 <input type="password" id="signup-password" name="password" required placeholder="••••••••">
             </div>
             <button type="submit" class="btn-submit">Create Account</button>
+        
+            {% if errors %}
+        <div class="signup-error-messages" style="margin-top: 15px;">
+            {% for field, field_errors in errors.items %}
+                {% for err in field_errors %}
+                    <div class="signup-error-message" style="color: rgb(191, 118, 118);">
+                        <strong>{{ field|title }}:</strong> {{ err }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
         </form>
 
         <div class="form-footer">
@@ -66,6 +82,15 @@
     </div>
 
     <script src="{% static 'accounts/js/auth.js' %}"></script>
+    {% if errors %}
+        <script>
+            // Automatically switch to signup tab if signup errors exist
+            document.addEventListener("DOMContentLoaded", function() {
+                switchTab('signup');
+            });
+        </script>
+    {% endif %}
+
 </body>
 </html>
 
