@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from accounts.serializers import UserRegistrationSerializer
 from django.contrib.auth.decorators import login_required
@@ -27,9 +27,10 @@ def login_view(request):
     if request.method == "GET" and request.user.is_authenticated == False:
         return render(request, "accounts/auth.html")
     
-    if request.method == "GET" and request.user.is_authenticated:
+    if request.method == "GET" and request.user.is_authenticated == True:
         return redirect("accounts:landing-page")
-        
+
+    # for valid credentials
     if request.method == "POST" and request.user.is_authenticated == False:
         email = request.POST.get("username")
         password = request.POST.get("password")
@@ -45,10 +46,10 @@ def login_view(request):
 
     # else invalid method
     return render(request, "accounts/auth.html", {"error": "Invalid method."})
-    
 
 
 def signup_view(request):
+
     """Processes signup form submissions from auth.html."""
     if request.method == "POST" and request.user.is_authenticated == False:
         serializer = UserRegistrationSerializer(data=request.POST)
@@ -62,6 +63,7 @@ def signup_view(request):
 
     # else not POST !
     return redirect("accounts:login-view")
+
 
 def logout_view(request):
     """Logs the user out and redirects to auth page."""

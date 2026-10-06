@@ -10,7 +10,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "password", "role", "picture"]
+        fields = ["id", "username", "email", "role", "password", "picture"]
 
     def validate_email(self, value):
         email = value.lower()
