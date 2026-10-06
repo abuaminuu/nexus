@@ -4,3 +4,4 @@ TODOs.txt
 
 commerce/tests/test_dashboard.py
 commerce/tests/test_serializers.py
+.env*
